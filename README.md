@@ -3,7 +3,11 @@
 
 Valkyrie is a data persistence library which provides a common interface to multiple backends. There are a growing number of Samvera applications that use Valkyrie including Hyrax. This workshop will introduce core concepts and how they differ from ActiveFedora, ActiveRecord, and ActiveStorage. We’ll build a simple rails application that uses Valkyrie to write metadata to a postgres database and store files on disk.
 
+# Prerequisites
+
 This workshop assumes a general familiarity with Object Orientation and Ruby programming.
+
+# Agenda
 
 We will learn:
 - Familiarity of Data Mapper pattern
