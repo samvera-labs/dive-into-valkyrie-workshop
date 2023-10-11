@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+  app: &app
+    build:
+      context: .
+    stdin_open: true
+    tty: true
+    environment:
+      - RAILS_ENV=development
+      - DATABASE_URL=postgres://postgres:password@db/webapp
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/rails
+    networks:
+      - internal
+      - external
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=webapp
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+      - external
+
+volumes:
+  db:
+
+networks:
+  internal:
+  external:
+
