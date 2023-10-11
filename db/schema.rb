@@ -10,8 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 0) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_11_204925) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
+
+  create_table "orm_resources", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "internal_resource"
+    t.integer "lock_version"
+    t.index ["internal_resource"], name: "index_orm_resources_on_internal_resource"
+    t.index ["metadata"], name: "index_orm_resources_on_metadata", using: :gin
+    t.index ["metadata"], name: "index_orm_resources_on_metadata_jsonb_path_ops", opclass: :jsonb_path_ops, using: :gin
+    t.index ["updated_at"], name: "index_orm_resources_on_updated_at"
+  end
 
 end
