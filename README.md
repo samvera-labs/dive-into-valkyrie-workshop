@@ -31,6 +31,10 @@ We will learn:
 **Please ensure you can do the following prior to the workshop:**
 
 ```sh
+git clone https://github.com/samvera-labs/dive-into-valkyrie-workshop.git
+cd dive-into-valkyrie-workshop
+docker-compose build app
+docker-compose up 
 ```
 
 ## Agenda
