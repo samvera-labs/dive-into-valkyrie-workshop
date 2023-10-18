@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   app: &app
+    image: ghcr.io/samvera-labs/dive-into-valkyrie-workshop:latest
     build:
       context: .
     stdin_open: true
