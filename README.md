@@ -33,7 +33,7 @@ We will learn:
 ```sh
 git clone https://github.com/samvera-labs/dive-into-valkyrie-workshop.git
 cd dive-into-valkyrie-workshop
-docker-compose build app
+docker-compose pull
 docker-compose up 
 ```
 
