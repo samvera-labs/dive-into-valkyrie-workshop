@@ -39,8 +39,13 @@ docker-compose up
 
 ## Agenda
 
-???
-
+### Concepts (9:00)
+### Resources (9:10)
+### Persisters and Query services (9:20)
+### File Storage (9:30)
+### Change Sets (9:45)
+### Putting it together in a controller (10:00)
+### Wrap up (10:20)
 
 ## Resources
 
