@@ -197,7 +197,7 @@ page = Valkyrie.config.metadata_adapter.persister.save(resource: page)
 
 ### Change Sets (9:30)
 
-Wraps a resource to provide validation, dirty tracking, and data coercion.  Makes use of reform to power forms in the webapp.
+Wraps a resource to provide validation, dirty tracking, and data coercion.  Makes use of `reform` to power forms in the webapp.
 ```ruby
 change_set = Valkyrie::ChangeSet.new(obj)
 change_set.validate(attribute_hash)
@@ -272,12 +272,13 @@ Now let's try it in the browser: <http://localhost:3000/books>
 
 Try fixing the index action.  Hint: We need to gather all of the book resources from the data store so we should use the query service.
 <details>
-<summary>Solution</summary>
-```ruby
-def index
-  @books = Valkyrie.config.metadata_adapter.query_service.find_all_of_model(model: Book)
-end
-```
+  <summary>Solution</summary>
+
+  ```ruby
+  def index
+    @books = Valkyrie.config.metadata_adapter.query_service.find_all_of_model(model: Book)
+  end
+  ```
 </details>
 
 #### New
@@ -286,32 +287,34 @@ Now our index view should load but there isn't any books to display.  We'll need
 We'll need to fix a couple things before this will work: the new action and the form partial.
 First let's look at the controller action.  The scaffolding gives us a new book object which is great but we're going to be rendering a form so we'll need a change set.
 <details>
-<summary>Solution</summary>
-```ruby
-def new
-  @book = Book.new
-  @change_set = BookChangeSet.new(@book)
-end
-```
+  <summary>Solution</summary>
+
+  ```ruby
+  def new
+    @book = Book.new
+    @change_set = BookChangeSet.new(@book)
+  end
+  ```
 </details>
 Next we'll use the change set in the form (`app/views/books/_form.html.erb`).
 Try fixing the form by using a change set.  Hint: `Valkyrie::ChangeSet.model` returns the model resource it wraps.
 <details>
-<summary>Solution</summary>
-```ruby
-<%= form_with(model: @change_set.model) do |form| %>
-  <% if @change_set.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(@change_set.errors.count, "error") %> prohibited this book from being saved:</h2>
+  <summary>Solution</summary>
 
-      <ul>
-        <% @change_set.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-```
+  ```ruby
+  <%= form_with(model: @change_set.model) do |form| %>
+    <% if @change_set.errors.any? %>
+      <div style="color: red">
+        <h2><%= pluralize(@change_set.errors.count, "error") %> prohibited this book from being saved:</h2>
+
+        <ul>
+          <% @change_set.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  ```
 </details>
 
 #### Create
@@ -320,27 +323,28 @@ With that our new book form should render in the browser.
 Fill out the form and try submitting it.
 The next step for us will be changing the create action in the controller to validate the form input and persist it.  Give it a try using what we learned about change sets and persisters.
 <details>
-<summary>Solution</summary>
-```ruby
-def create
-  @book = Book.new
-  @change_set = BookChangeSet.new(@book)
-  if @change_set.validate(book_params)
-    @change_set.sync
-    @book = Valkyrie.config.metadata_adapter.persister.save(resource: @book)
-  end
+  <summary>Solution</summary>
 
-  respond_to do |format|
-    if @book.persisted?
-      format.html { redirect_to book_url(@book), notice: "Book was successfully created." }
-      format.json { render :show, status: :created, location: @book }
-    else
-      format.html { render :new, status: :unprocessable_entity }
-      format.json { render json: @change_set.errors, status: :unprocessable_entity }
+  ```ruby
+  def create
+    @book = Book.new
+    @change_set = BookChangeSet.new(@book)
+    if @change_set.validate(book_params)
+      @change_set.sync
+      @book = Valkyrie.config.metadata_adapter.persister.save(resource: @book)
+    end
+
+    respond_to do |format|
+      if @book.persisted?
+        format.html { redirect_to book_url(@book), notice: "Book was successfully created." }
+        format.json { render :show, status: :created, location: @book }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @change_set.errors, status: :unprocessable_entity }
+      end
     end
   end
-end
-```
+  ```
 </details>
 
 #### Show
@@ -348,12 +352,13 @@ end
 We can create book objects now and see them on the index page!
 Try going to the show view for a book...we'll have to change how we retrieve the book.  We can do this in the `before_action`.
 <details>
-<summary>Solution</summary>
-```ruby
-def set_book
-  @book = Valkyrie.config.metadata_adapter.query_service.find_by(id: params[:id])
-end
-```
+  <summary>Solution</summary>
+
+  ```ruby
+  def set_book
+    @book = Valkyrie.config.metadata_adapter.query_service.find_by(id: params[:id])
+  end
+  ```
 </details>
 
 #### Edit + Update
@@ -361,49 +366,51 @@ end
 Now let's do the same thing for edits.  Our edit form should work since it is the same form we already fixed but we'll have to fix the edit and update actions in the controller.
 Hint: Update and create aren't all that different, right?
 <details>
-<summary>Solution</summary>
-```ruby
-def edit
-  @change_set = BookChangeSet.new(@book)
-end
+  <summary>Solution</summary>
 
-def update
-  updated = false
-  @change_set = BookChangeSet.new(@book)
-  if @change_set.validate(book_params)
-    @change_set.sync
-    @book = Valkyrie.config.metadata_adapter.persister.save(resource: @book)
-    updated = true
+  ```ruby
+  def edit
+    @change_set = BookChangeSet.new(@book)
   end
 
-  respond_to do |format|
-    if updated
-      format.html { redirect_to book_url(@book), notice: "Book was successfully updated." }
-      format.json { render :show, status: :ok, location: @book }
-    else
-      format.html { render :new, status: :unprocessable_entity }
-      format.json { render json: @change_set.errors, status: :unprocessable_entity }
+  def update
+    updated = false
+    @change_set = BookChangeSet.new(@book)
+    if @change_set.validate(book_params)
+      @change_set.sync
+      @book = Valkyrie.config.metadata_adapter.persister.save(resource: @book)
+      updated = true
+    end
+
+    respond_to do |format|
+      if updated
+        format.html { redirect_to book_url(@book), notice: "Book was successfully updated." }
+        format.json { render :show, status: :ok, location: @book }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @change_set.errors, status: :unprocessable_entity }
+      end
     end
   end
-end
-```
+  ```
 </details>
 
 #### Delete
 
 We can create and update books so let's work on deleting books.  The persister handles deletes as well as saves.
 <details>
-<summary>Solution</summary>
-```ruby
-def destroy
-  Valkyrie.config.metadata_adapter.persister.delete(resource: @book)
+  <summary>Solution</summary>
 
-  respond_to do |format|
-    format.html { redirect_to books_url, notice: "Book was successfully destroyed." }
-    format.json { head :no_content }
+  ```ruby
+  def destroy
+    Valkyrie.config.metadata_adapter.persister.delete(resource: @book)
+
+    respond_to do |format|
+      format.html { redirect_to books_url, notice: "Book was successfully destroyed." }
+      format.json { head :no_content }
+    end
   end
-end
-```
+  ```
 </details>
 
 ### Wrap up (10:25)
