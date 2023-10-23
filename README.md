@@ -123,7 +123,7 @@ class Book < Valkyrie::Resource
               .of(Valkyrie::Types::Strict::String)
               .meta(ordered: true)
   attribute :series, Valkyrie::Types::Strict::String
-  attribute :member_ids, Valkryie::Types::Array
+  attribute :member_ids, Valkyrie::Types::Array
               .of(Valkyrie::Types::ID)
 end
 ```
@@ -167,29 +167,30 @@ end
 
 Now in the console try:
 ```ruby
-book = Valkryie.config.metadata_adapter.query_service.find_all_of_model(model: Book).first
+book = Book.new(title: "Tuesdays at the Castle", author: "Jessica Day George")
+book = Valkyrie.config.metadata_adapter.persister.save(resource: book)
 page = Page.new
 page.number = 1
 saved_page = Valkyrie.config.metadata_adapter.persister.save(resource: page)
 book.member_ids << saved_page.id
 book = Valkyrie.config.metadata_adapter.persister.save(resource: book)
-Valkyrie.config.metadata_adapter.query_service.find_members(resource: book)
-Valkyrie.config.metadata_adapter.query_service.find_parents(resource: saved_page)
+Valkyrie.config.metadata_adapter.query_service.find_members(resource: book).to_a
+Valkyrie.config.metadata_adapter.query_service.find_parents(resource: saved_page).to_a
 ```
 
 Let's look at attaching binary files:
 ```ruby
-upload = ActionDispatch::Http::UploadedFile.new tempfile: File.new('/rails/README.md'), filename: 'README.md', type: 'text/plain')
+upload = ActionDispatch::Http::UploadedFile.new(tempfile: File.new('/rails/README.md'), filename: 'README.md', type: 'text/plain')
 file = Valkyrie.config.storage_adapter.upload(file: upload, resource: page, original_filename: 'README.md')
 file.id
 page.file_ids << file.id
 page = Valkyrie.config.metadata_adapter.persister.save(resource: page)
-Valkryie.config.storage_adapter.find_by(id: page.file_ids.first)
+Valkyrie.config.storage_adapter.find_by(id: page.file_ids.first)
 size = file.size
 sha1 = file.checksum(digests:[Digest::SHA1.new]).first
 file.valid?(size: size, digests: {sha1: sha1})
 Valkyrie.config.storage_adapter.delete(file.id)
-Valkryie.config.storage_adapter.find_by(id: page.file_ids.first)
+Valkyrie.config.storage_adapter.find_by(id: page.file_ids.first)
 page.file_ids = []
 page = Valkyrie.config.metadata_adapter.persister.save(resource: page)
 ```
@@ -213,6 +214,7 @@ class BookChangeSet < Valkyrie::ChangeSet
   property :title
   property :author
   property :series
+  property :alternate_ids
 
   validates :title, presence: true
   validates :author, presence: true
@@ -252,7 +254,7 @@ saved_book = Valkyrie.config.metadata_adapter.persister.save(resource: book)
 
 ### Excercise: Putting it together in a controller (9:45)
 
-First we need to add a method to the resource model:
+First we need to add a method to the resource model in order to rendering book resources.  Let's not dwell on this.
 ```ruby
 def to_partial_path
   "#{model_name.collection}/#{model_name.element}"
@@ -261,7 +263,7 @@ end
 
 Next generate the boilerplate controller, helper, and views:
 ```sh
-bundle exec rails g scaffold_controller Book alternate_ids:string title:string author:string series:string
+docker-compose exec app bundle exec rails g scaffold_controller Book title:string author:string series:string alternate_ids:string
 ```
 
 Now let's try it in the browser: <http://localhost:3000/books>
