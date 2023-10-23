@@ -271,6 +271,7 @@ Now let's try it in the browser: <http://localhost:3000/books>
 #### Index
 
 Try fixing the index action.  Hint: We need to gather all of the book resources from the data store so we should use the query service.
+
 <details>
   <summary>Solution</summary>
 
@@ -286,6 +287,7 @@ Try fixing the index action.  Hint: We need to gather all of the book resources 
 Now our index view should load but there isn't any books to display.  We'll need to create one so click the New book link.
 We'll need to fix a couple things before this will work: the new action and the form partial.
 First let's look at the controller action.  The scaffolding gives us a new book object which is great but we're going to be rendering a form so we'll need a change set.
+
 <details>
   <summary>Solution</summary>
 
@@ -296,8 +298,9 @@ First let's look at the controller action.  The scaffolding gives us a new book 
   end
   ```
 </details>
-Next we'll use the change set in the form (`app/views/books/_form.html.erb`).
-Try fixing the form by using a change set.  Hint: `Valkyrie::ChangeSet.model` returns the model resource it wraps.
+
+Next we'll use the change set in the form (`app/views/books/_form.html.erb`). Try fixing the form by using a change set.  Hint: `Valkyrie::ChangeSet.model` returns the model resource it wraps.
+
 <details>
   <summary>Solution</summary>
 
@@ -322,6 +325,7 @@ Try fixing the form by using a change set.  Hint: `Valkyrie::ChangeSet.model` re
 With that our new book form should render in the browser.
 Fill out the form and try submitting it.
 The next step for us will be changing the create action in the controller to validate the form input and persist it.  Give it a try using what we learned about change sets and persisters.
+
 <details>
   <summary>Solution</summary>
 
@@ -351,6 +355,7 @@ The next step for us will be changing the create action in the controller to val
 
 We can create book objects now and see them on the index page!
 Try going to the show view for a book...we'll have to change how we retrieve the book.  We can do this in the `before_action`.
+
 <details>
   <summary>Solution</summary>
 
@@ -365,6 +370,7 @@ Try going to the show view for a book...we'll have to change how we retrieve the
 
 Now let's do the same thing for edits.  Our edit form should work since it is the same form we already fixed but we'll have to fix the edit and update actions in the controller.
 Hint: Update and create aren't all that different, right?
+
 <details>
   <summary>Solution</summary>
 
@@ -398,6 +404,7 @@ Hint: Update and create aren't all that different, right?
 #### Delete
 
 We can create and update books so let's work on deleting books.  The persister handles deletes as well as saves.
+
 <details>
   <summary>Solution</summary>
 
