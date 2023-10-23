@@ -26,15 +26,16 @@ We will learn:
    1. Bundled in Valkyrie gem
    2. Adapter ecosystem
 
-## Prerequisites
+## Getting Started
 
-**Please ensure you can do the following prior to the workshop:**
+This respository includes a new Rails 7.1 application and a `docker-compose.yml` intended to run that application and its dependencies.  The application has the Valkyrie gem configured to use the postgres adapter and disk storage adapter.  We'll use this application as a general workspace throughout the workshop and as the base for our exercises.
 
+To ensure you can run the application, do:
 ```sh
 git clone https://github.com/samvera-labs/dive-into-valkyrie-workshop.git
 cd dive-into-valkyrie-workshop
-docker-compose pull
-docker-compose up 
+docker compose pull
+docker compose up 
 ```
 
 ## Agenda
