@@ -268,7 +268,7 @@ Now let's try it in the browser: <http://localhost:3000/books>
 #### Index
 Try fixing the index action.  Hint: We need to gather all of the book resources from the data store so we should use the query service.
 <details>
-<summary>Answer</summary>
+<summary>Solution</summary>
 ```ruby
 def index
   @books = Valkyrie.config.metadata_adapter.query_service.find_all_of_model(model: Book)
@@ -281,7 +281,7 @@ Now our index view should load but there isn't any books to display.  We'll need
 We'll need to fix a couple things before this will work: the new action and the form partial.
 First let's look at the controller action.  The scaffolding gives us a new book object which is great but we're going to be rendering a form so we'll need a change set.
 <details>
-<summary>Answer</summary>
+<summary>Solution</summary>
 ```ruby
 def new
   @book = Book.new
@@ -292,7 +292,7 @@ end
 Next we'll use the change set in the form (`app/views/books/_form.html.erb`).
 Try fixing the form by using a change set.  Hint: `Valkyrie::ChangeSet.model` returns the model resource it wraps.
 <details>
-<summary>Answer</summary>
+<summary>Solution</summary>
 ```ruby
 <%= form_with(model: @change_set.model) do |form| %>
   <% if @change_set.errors.any? %>
@@ -314,7 +314,7 @@ With that our new book form should render in the browser.
 Fill out the form and try submitting it.
 The next step for us will be changing the create action in the controller to validate the form input and persist it.  Give it a try using what we learned about change sets and persisters.
 <details>
-<summary>Answer</summary>
+<summary>Solution</summary>
 ```ruby
 def create
   @book = Book.new
@@ -341,7 +341,7 @@ end
 We can create book objects now and see them on the index page!
 Try going to the show view for a book...we'll have to change how we retrieve the book.  We can do this in the `before_action`.
 <details>
-<summary>Answer</summary>
+<summary>Solution</summary>
 ```ruby
 def set_book
   @book = Valkyrie.config.metadata_adapter.query_service.find_by(id: params[:id])
@@ -353,7 +353,7 @@ end
 Now let's do the same thing for edits.  Our edit form should work since it is the same form we already fixed but we'll have to fix the edit and update actions in the controller.
 Hint: Update and create aren't all that different, right?
 <details>
-<summary>Answer</summary>
+<summary>Solution</summary>
 ```ruby
 def edit
   @change_set = BookChangeSet.new(@book)
@@ -384,7 +384,7 @@ end
 #### Delete
 We can create and update books so let's work on deleting books.  The persister handles deletes as well as saves.
 <details>
-<summary>Answer</summary>
+<summary>Solution</summary>
 ```ruby
 def destroy
   Valkyrie.config.metadata_adapter.persister.delete(resource: @book)
